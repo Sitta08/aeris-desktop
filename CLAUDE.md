@@ -35,6 +35,7 @@ Four layers, deliberately separated:
 | 2. API client (server.py REST) | `src/main/layers/api` | mock + HTTP impls |
 | 3. Session cache | `src/main/layers/cache` | in-memory, last snapshot |
 | — Auth | `src/main/layers/auth` | mock + HTTP impls |
+| — Tracking (ByteTrack) | `src/main/layers/tracking` | mock + HTTP impls; independent of Layer 2 |
 | 4. UI | `src/renderer` | React |
 
 **Layers 1–3 + auth live in the main process**, not the renderer: the real
@@ -57,6 +58,13 @@ flags; nothing else in the app branches on "are we mocking?".
   (`useMockMotor: true` — Arduino not connected; mocks `/api/motor/*`).
   `HybridApiClient` composes real+mock per method; flip a flag to false once the
   hardware is connected. **Single source of truth: `docs/MOCK_STATUS.md`.**
+- **The rest of the Tools endpoints are REAL** — diagnostics, event logs,
+  automation rules, calibration, and tracking config are all merged on the Pi
+  (`useMockDiagnostics` / `useMockEventLogs` / `useMockAutomation` /
+  `useMockCalibration` / `useMockTracking` are all `false`). Two of them are
+  only half-wired on the Pi side: calibration values aren't bound into
+  `vision_node.py` yet, and tracking's `process_noise_pos` / `process_noise_vel`
+  are accepted but don't affect the tracker.
 - **Dongle is MOCK** — `useMockConnection: true`.
 - **Signup captures first/last name** (wired through the whole chain). It is
   NOT editable in-app by design — the report's "ผู้จัดทำ" uses it, falling back
@@ -70,10 +78,14 @@ Monitoring group: **Live viewer** (webview), **Dashboard** (PM2.5 + mask tiles),
 teach/playback for Arduino CNC Shield/A4988), **Terminal & CMD** (interactive
 SSH shell to the Pi via `services/sshTerminal.ts` + ssh2/xterm.js — added by
 Codex), **Tracking Tuner** (ByteTrackConfig sliders; its own layer,
-`src/main/layers/tracking`, independent of Layer 2 — mock until
-`/api/tracking/config` exists, see `docs/pi-tracking-config-endpoint.md`).
+`src/main/layers/tracking`, independent of Layer 2 — real, 11-field contract,
+see `docs/pi-tracking-config-endpoint.md`), **System Diagnostics**
+(`/api/diagnostics`), **Event Logs** (`/api/event-logs`), **Automation Rules**
+(`/api/automation/rules`), **Calibration CAM** (`/api/calibration`).
 Bottom: **Settings** (account, avatar, read-only name, INFO Load & Temp card,
 admin user-management dialog, logout).
+
+Eleven pages in total — `pages/registry.tsx` is the list that decides.
 
 ## Renderer: shell + pages
 
@@ -137,20 +149,26 @@ variables in `theme/theme.css` (`--aeris-sb-item-h`, `--aeris-sb-head-h`,
 
 ## Pending work
 
-Pi-side endpoints the app already calls but the Pi doesn't serve yet (each has a
-self-contained doc; app uses mock until done):
+Pi-side work still outstanding (each has a self-contained doc):
 
 | Task | Doc |
 |---|---|
-| `/api/system/info` (load/temps/Hailo-8L) | `docs/pi-system-info-endpoint.md` |
-| `/api/pm-history` (PM2.5 time series; check existing `pm_trend` first) | `docs/pi-pm-history-endpoint.md` |
-| `/api/mask-history` (bucketed mask counts) | `docs/pi-mask-history-endpoint.md` |
-| `/api/motor/*` (stepper: move/home/stop/teach/play) | `docs/pi-stepper-motor-endpoint.md` |
-| `/api/tracking/config` (ByteTrack tuning; confirm real field names/defaults first) | `docs/pi-tracking-config-endpoint.md` |
 | first/last name: signup + login + set owner's name | `docs/pi-profile-name.md` |
 | Verify `AERIS_JWT_SECRET` survives reboot | `docs/pi-jwt-secret-check.md` |
 | Restrict user management to one owner + password re-confirm | `docs/admin-access-hardening.md` |
 | Move SSH off port 22 → 2222 (do near project end) | `docs/pi-ssh-port-hardening.md` |
+
+The endpoint docs for `/api/system/info`, `/api/pm-history`, `/api/mask-history`,
+`/api/motor/*`, `/api/diagnostics`, `/api/event-logs`, `/api/automation/rules`,
+`/api/calibration`, and `/api/tracking/config` are **done and merged on the Pi**
+— they stay in `docs/` as the contract reference, not as a to-do list.
+
+Half-wired on the Pi: calibration values aren't bound into `vision_node.py`;
+tracking's `process_noise_pos` / `process_noise_vel` are accepted but ignored by
+the tracker; automation actions depend on the detection pipeline + Arduino.
+
+Blocked on hardware only (code + endpoints ready, one flag each): PM2.5 sensor
+(`useMockPm`), Arduino/CNC stepper (`useMockMotor`).
 
 Other: real ESP32 dongle transport (`Esp32Connection` is a stub). Once it
 exists, `docs/dongle-ssh-integration-plan.md` plans how the dongle powers the
