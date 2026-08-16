@@ -1,0 +1,44 @@
+appId: com.aeris.desktop
+productName: AERIS Desktop
+copyright: Copyright © 2026 AERIS
+
+directories:
+  buildResources: build
+  output: dist
+
+# electron-vite emits the compiled app into ./out — package that plus node_modules
+files:
+  - out/**/*
+  - package.json
+
+# Windows: NSIS installer + a portable single-exe
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+  # icon: build/icon.ico   # add a 256x256 .ico here to brand the app
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+
+# Linux: AppImage + .deb
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+  maintainer: AERIS
+  # icon: build/icon.png   # add a 512x512 .png here
+
+deb:
+  depends:
+    - libgtk-3-0
+    - libnotify4
+    - libnss3
+    - libxss1

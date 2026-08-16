@@ -1,0 +1,246 @@
+.diag {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.diag__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.diag__title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.diag__sub {
+  margin-top: 3px;
+  color: var(--aeris-text-dim);
+  font-size: 13px;
+}
+
+.diag__refresh {
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--aeris-border);
+  border-radius: 8px;
+  background: var(--aeris-surface-2);
+  color: var(--aeris-text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.diag__refresh:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.diag-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  background: var(--aeris-glass-bg);
+  border: 1px solid var(--aeris-glass-border);
+  border-radius: var(--aeris-radius);
+  backdrop-filter: blur(var(--aeris-glass-blur));
+  -webkit-backdrop-filter: blur(var(--aeris-glass-blur));
+}
+
+.diag-summary--ok {
+  border-color: rgba(63, 191, 106, 0.32);
+}
+
+.diag-summary--warn {
+  border-color: rgba(255, 176, 32, 0.38);
+}
+
+.diag-summary--error {
+  border-color: rgba(255, 77, 77, 0.42);
+}
+
+.diag-summary__k {
+  font-size: 11px;
+  color: var(--aeris-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.diag-summary__v {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.diag-summary__t {
+  margin-top: 4px;
+  color: var(--aeris-text-dim);
+  font-size: 12px;
+}
+
+.diag-summary__counts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(72px, 1fr));
+  gap: 10px;
+  min-width: min(420px, 48%);
+}
+
+.diag-count {
+  padding: 10px 12px;
+  background: var(--aeris-surface-2);
+  border: 1px solid var(--aeris-border);
+  border-radius: 8px;
+}
+
+.diag-count span {
+  display: block;
+  color: var(--aeris-text-faint);
+  font-size: 11px;
+}
+
+.diag-count strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 20px;
+}
+
+.diag-count--ok strong {
+  color: var(--aeris-ok);
+}
+
+.diag-count--warn strong {
+  color: var(--aeris-warn);
+}
+
+.diag-count--error strong {
+  color: var(--aeris-err);
+}
+
+.diag-count--unknown strong {
+  color: var(--aeris-text-dim);
+}
+
+.diag__error {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--aeris-err);
+  background: rgba(255, 77, 77, 0.12);
+  border: 1px solid rgba(255, 77, 77, 0.35);
+  border-radius: 8px;
+}
+
+.diag__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.diag__empty {
+  grid-column: 1 / -1;
+  padding: 30px;
+  color: var(--aeris-text-dim);
+  text-align: center;
+  background: var(--aeris-surface);
+  border: 1px solid var(--aeris-border);
+  border-radius: var(--aeris-radius);
+}
+
+.diag-card {
+  padding: 15px;
+  background: var(--aeris-surface);
+  border: 1px solid var(--aeris-border);
+  border-radius: var(--aeris-radius);
+}
+
+.diag-card--ok {
+  border-color: rgba(63, 191, 106, 0.22);
+}
+
+.diag-card--warn {
+  border-color: rgba(255, 176, 32, 0.3);
+}
+
+.diag-card--error {
+  border-color: rgba(255, 77, 77, 0.34);
+}
+
+.diag-card__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diag-card__head h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+}
+
+.diag-card__state {
+  color: var(--aeris-text-dim);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.diag-card__detail {
+  min-height: 38px;
+  margin: 10px 0 14px;
+  color: var(--aeris-text-dim);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.diag-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--aeris-text-faint);
+  font-size: 12px;
+}
+
+.state-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--aeris-text-faint);
+}
+
+.state-dot--ok {
+  background: var(--aeris-ok);
+  box-shadow: 0 0 8px rgba(63, 191, 106, 0.8);
+}
+
+.state-dot--warn {
+  background: var(--aeris-warn);
+  box-shadow: 0 0 8px rgba(255, 176, 32, 0.75);
+}
+
+.state-dot--error {
+  background: var(--aeris-err);
+  box-shadow: 0 0 8px rgba(255, 77, 77, 0.75);
+}
+
+@media (max-width: 860px) {
+  .diag-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .diag-summary__counts {
+    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .diag__grid {
+    grid-template-columns: 1fr;
+  }
+}

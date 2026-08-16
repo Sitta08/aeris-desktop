@@ -1,0 +1,537 @@
+/* ── Shell layout ──
+ * Top bar spans the full window width; the sidebar sits BELOW it on the left
+ * (GitLab/Jira style), so the avatar toggle in the top bar never moves. */
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.shell__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.shell__content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  position: relative;
+  transition: margin-left 220ms ease;
+  /* Ambient neon light: layered orange glows that slowly DRIFT behind the
+   * frosted glass, so the backdrop-blur always has something alive to refract —
+   * that motion is what makes the panels read as real glass. Pure CSS: gradients
+   * are centred and placed/animated with background-position only (GPU-cheap, no
+   * layout, no repaint of the DOM). Anchored to the pane (attachment: scroll) so
+   * the light stays put while page content scrolls over it. */
+  background-color: var(--aeris-bg);
+  /* Sizes are PERCENTAGES of the pane, so each glow is huge and soft — they
+   * overlap into one continuous wash of light seeping from the edges instead of
+   * reading as separate spotlights. Peak alpha is lower than the blob version
+   * precisely because they stack. */
+  background-image:
+    /* wash spilling down from the top edge */
+    radial-gradient(150% 95% at 50% -25%, rgba(255, 150, 52, 0.22), transparent 60%),
+    /* warm ambient bleeding in from the left */
+    radial-gradient(95% 135% at -12% 38%, rgba(255, 120, 32, 0.2), transparent 58%),
+    /* cooler-orange bleed from the right */
+    radial-gradient(95% 135% at 112% 58%, rgba(255, 104, 26, 0.18), transparent 58%),
+    /* broad floor glow rising from the bottom */
+    radial-gradient(170% 85% at 50% 124%, rgba(255, 150, 48, 0.2), transparent 62%);
+  background-repeat: no-repeat;
+  background-position: 50% 0%, 0% 50%, 100% 50%, 50% 100%;
+  background-attachment: scroll;
+  animation: aeris-ambient-drift 30s ease-in-out infinite alternate;
+}
+
+/* Gentle breathing of the whole wash: the edges swell inward and ease back, so
+ * the light feels like it's slowly filling the room rather than sliding around.
+ * Small offsets keep it a wash, never a moving dot. */
+@keyframes aeris-ambient-drift {
+  from {
+    background-position: 46% -3%, -3% 44%, 103% 54%, 54% 103%;
+  }
+  to {
+    background-position: 54% 3%, 3% 56%, 97% 46%, 46% 97%;
+  }
+}
+
+/* Respect users who ask the OS to reduce motion — hold the light still. */
+@media (prefers-reduced-motion: reduce) {
+  .shell__content {
+    animation: none;
+  }
+}
+
+/* sidebar held open: reserve space so the panel never covers the content */
+.shell.is-pinned .shell__content {
+  margin-left: var(--aeris-sidebar-w);
+}
+
+/* Auto-hide scrollbar (overrides the global slim style for the main view):
+ * invisible at rest, fades in while scrolling (data-scrolling toggled in JS),
+ * and still turns orange on direct hover. */
+.shell__content::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  transition: background-color 0.4s ease;
+}
+.shell__content[data-scrolling='true']::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+.shell__content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 122, 26, 0.55);
+  transition: none;
+}
+.shell__content::-webkit-scrollbar-thumb:active {
+  background-color: var(--aeris-accent);
+}
+
+/* ── Sidebar (auto-hide overlay) ──
+ * The zone is a thin fixed strip on the left edge that catches the hover.
+ * The panel and rail overflow out of it; because they're DOM descendants,
+ * the pointer is still "inside" the zone while hovering them, so it stays
+ * open until the mouse leaves both. Everything overlays the content area —
+ * nothing here participates in the shell's flex flow. */
+.sidebar-zone {
+  position: fixed;
+  left: 0;
+  /* starts below the full-width top bar */
+  top: var(--aeris-topbar-h);
+  height: calc(100vh - var(--aeris-topbar-h));
+  width: 14px; /* edge hover target while hidden */
+  z-index: 100;
+}
+
+.sidebar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: var(--aeris-sidebar-w);
+  /* Frosted glass with its OWN ambient light: a translucent dark base (lets the
+   * drifting background bleed through the blur when floating over content) plus
+   * two soft orange glows anchored top and bottom, so the panel always looks lit
+   * even when pinned where no content sits behind it. */
+  background-color: rgba(18, 18, 18, 0.55);
+  background-image:
+    radial-gradient(135% 46% at 50% -12%, rgba(255, 152, 54, 0.17), transparent 62%),
+    radial-gradient(135% 46% at 50% 112%, rgba(255, 118, 30, 0.14), transparent 62%);
+  background-repeat: no-repeat;
+  background-position: 50% 0%, 50% 100%;
+  backdrop-filter: blur(var(--aeris-glass-blur));
+  -webkit-backdrop-filter: blur(var(--aeris-glass-blur));
+  border-right: 1px solid var(--aeris-glass-border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--aeris-sb-pad);
+  transform: translateX(-100%);
+  transition: transform 220ms ease;
+  box-shadow: none;
+  overflow: hidden;
+  /* the two glows breathe up/down, matching the content wash's rhythm */
+  animation: aeris-sidebar-glow 30s ease-in-out infinite alternate;
+}
+
+@keyframes aeris-sidebar-glow {
+  from {
+    background-position: 50% -4%, 50% 104%;
+  }
+  to {
+    background-position: 50% 5%, 50% 95%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    animation: none;
+  }
+}
+
+/* revealed on hover, or when a child gets keyboard focus */
+.sidebar-zone[data-open='true'] .sidebar,
+.sidebar-zone:focus-within .sidebar {
+  transform: translateX(0);
+  box-shadow: 6px 0 24px rgba(0, 0, 0, 0.45);
+}
+
+/* pinned: flush against the content, no floating shadow needed */
+.sidebar-zone[data-pinned='true'] .sidebar {
+  transform: translateX(0);
+  box-shadow: none;
+}
+
+/* the rail only exists to hint at the active page while the panel is hidden */
+.sidebar-zone[data-pinned='true'] .sidebar-rail {
+  opacity: 0;
+}
+
+/* ── Sidebar sections ── */
+.sidebar__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aeris-sb-group-gap);
+}
+
+.sb-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aeris-sb-row-gap);
+}
+
+/* Settings & friends, pinned to the bottom of the panel */
+.sb-group--bottom {
+  margin-top: auto;
+  padding-top: var(--aeris-sb-group-gap);
+}
+
+.sb-group__head {
+  height: var(--aeris-sb-head-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--aeris-text-faint);
+  white-space: nowrap;
+}
+
+/* rule that runs from the label to the edge, centred on the text baseline */
+.sb-group__head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--aeris-border);
+}
+
+/* placeholder for a section that has no pages yet */
+.sb-group__empty {
+  height: var(--aeris-sb-item-h);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 12px;
+  color: var(--aeris-text-faint);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.sb-item {
+  height: var(--aeris-sb-item-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--aeris-text-dim);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sb-item:hover {
+  background: var(--aeris-surface-2);
+  color: var(--aeris-text);
+}
+
+.sb-item.is-active {
+  background: var(--aeris-accent-soft);
+  color: var(--aeris-accent);
+}
+
+.sb-item__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+}
+
+.sb-item__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sb-item__label {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Active-page rail (visible while the panel is hidden) ──
+ * Mirrors the panel's box structure using the same shared metrics, so every
+ * marker lines up with its row without hard-coded offsets. */
+.sidebar-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  padding: var(--aeris-sb-pad) 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+
+.sidebar-rail__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aeris-sb-group-gap);
+}
+
+.rail-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aeris-sb-row-gap);
+}
+
+.rail-group--bottom {
+  margin-top: auto;
+  padding-top: var(--aeris-sb-group-gap);
+}
+
+/* invisible spacers matching the panel's heading / empty-state rows */
+.rail-head {
+  height: var(--aeris-sb-head-h);
+}
+
+.rail-empty {
+  height: var(--aeris-sb-item-h);
+}
+
+.rail-mark {
+  width: 3px;
+  height: var(--aeris-sb-item-h);
+  border-radius: 0 3px 3px 0;
+  background: transparent;
+  transition: background 180ms ease;
+}
+
+.rail-mark.is-active {
+  background: var(--aeris-accent);
+  box-shadow: 0 0 10px var(--aeris-accent-soft);
+}
+
+.sidebar-zone[data-open='true'] .sidebar-rail,
+.sidebar-zone:focus-within .sidebar-rail {
+  opacity: 0;
+}
+
+/* ── Top bar ── */
+.topbar {
+  height: var(--aeris-topbar-h);
+  flex-shrink: 0;
+  position: relative;
+  background: var(--aeris-surface);
+  border-bottom: 1px solid var(--aeris-border);
+  /* 1fr auto 1fr keeps the brand centred in the WINDOW, regardless of how
+     wide the left/right clusters get */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 0 18px;
+}
+
+.topbar__left {
+  grid-column: 1;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.topbar__right {
+  grid-column: 3;
+  justify-self: end;
+}
+
+/* centre brand — text comes from shell/branding.ts */
+.topbar__brand {
+  position: absolute;
+  left: calc(50% + 33px);
+  transform: translateX(-50%);
+  max-width: min(420px, calc(100% - 360px));
+  text-align: center;
+  line-height: 1.25;
+  pointer-events: none;
+}
+
+.topbar__brand-name {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--aeris-accent);
+  white-space: nowrap;
+}
+
+.topbar__brand-tagline {
+  font-size: 11px;
+  color: var(--aeris-text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* avatar doubles as the sidebar open/close toggle */
+.topbar__avatar {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--aeris-accent);
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.12s;
+}
+
+.topbar__avatar:hover {
+  transform: scale(1.06);
+}
+
+.topbar__avatar.is-active {
+  border-color: var(--aeris-accent);
+  box-shadow: 0 0 0 2px var(--aeris-bg) inset;
+}
+
+.topbar__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.topbar__avatar-initial {
+  color: #0b0b0b;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.topbar__divider {
+  width: 1px;
+  height: 20px;
+  background: var(--aeris-border);
+}
+
+.topbar__tab {
+  font-weight: 600;
+  color: var(--aeris-text);
+}
+
+/* ── Connection pill ── */
+.conn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--aeris-surface-2);
+  border: 1px solid var(--aeris-border);
+  font-size: 13px;
+  color: var(--aeris-text-dim);
+}
+
+.conn__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--aeris-text-faint);
+}
+
+.conn--connected .conn__dot {
+  background: var(--aeris-ok);
+  box-shadow: 0 0 8px var(--aeris-ok);
+}
+.conn--connected .conn__label {
+  color: var(--aeris-text);
+}
+.conn--connecting .conn__dot {
+  background: var(--aeris-warn);
+  animation: conn-pulse 1s ease-in-out infinite;
+}
+.conn--error .conn__dot {
+  background: var(--aeris-err);
+}
+
+@keyframes conn-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ── Pages ── */
+.page {
+  height: 100%;
+  padding: 24px;
+}
+
+.page--flush {
+  padding: 0;
+  display: flex;
+}
+
+.live-webview {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #000;
+}
+
+.page__empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  color: var(--aeris-text);
+  /* Frosted glass: barely-there fill + blurred backdrop so the ambient glows
+   * read softly through it. Sits over .shell__content's background. */
+  background: var(--aeris-glass-bg);
+  border: 1px solid var(--aeris-glass-border);
+  border-radius: var(--aeris-radius);
+  backdrop-filter: blur(var(--aeris-glass-blur));
+  -webkit-backdrop-filter: blur(var(--aeris-glass-blur));
+}
+
+.page__empty-icon {
+  font-size: 44px;
+  margin-bottom: 4px;
+}
+
+.muted {
+  color: var(--aeris-text-dim);
+  line-height: 1.6;
+}
+
+code {
+  background: var(--aeris-surface-2);
+  border: 1px solid var(--aeris-border);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 12px;
+  color: var(--aeris-accent);
+}

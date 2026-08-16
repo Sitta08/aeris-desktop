@@ -1,0 +1,279 @@
+.tt {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tt__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.tt__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.tt__sub {
+  margin-top: 4px;
+  color: var(--aeris-text-dim);
+  font-size: 13px;
+}
+
+.tt__notice {
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--aeris-warn);
+  background: rgba(255, 176, 32, 0.1);
+  border: 1px solid rgba(255, 176, 32, 0.32);
+  border-radius: 10px;
+}
+
+.tt__notice code {
+  color: var(--aeris-text);
+  background: var(--aeris-surface-2);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12px;
+}
+
+.tt__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px;
+  background: var(--aeris-glass-bg);
+  border: 1px solid var(--aeris-glass-border);
+  border-radius: var(--aeris-radius);
+  backdrop-filter: blur(var(--aeris-glass-blur));
+  -webkit-backdrop-filter: blur(var(--aeris-glass-blur));
+}
+
+.tt__panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tt__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--aeris-text);
+}
+
+.tt__hint {
+  font-size: 11px;
+  color: var(--aeris-text-faint);
+  font-family: ui-monospace, monospace;
+}
+
+.tt__empty {
+  padding: 20px 0;
+  color: var(--aeris-text-faint);
+  font-size: 13px;
+  text-align: center;
+}
+
+.tt__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tt-field__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tt-field__head label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--aeris-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Badge on knobs the Pi accepts but doesn't act on yet (process_noise_*). */
+.tt-field__pending {
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: var(--aeris-warn);
+  background: rgba(255, 176, 32, 0.12);
+  border: 1px solid rgba(255, 176, 32, 0.35);
+  white-space: nowrap;
+}
+
+.tt-field__num {
+  width: 84px;
+  min-height: 32px;
+  padding: 4px 8px;
+  text-align: right;
+  color: var(--aeris-accent);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--aeris-surface-2);
+  border: 1px solid var(--aeris-border);
+  border-radius: 7px;
+  font: inherit;
+}
+
+.tt-field__num:focus-visible,
+.tt-field__slider:focus-visible,
+.tt__primary:focus-visible,
+.tt__secondary:focus-visible {
+  outline: 2px solid var(--aeris-accent);
+  outline-offset: 2px;
+}
+
+/* range slider, themed to match the accent */
+.tt-field__slider {
+  width: 100%;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tt-field__slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--aeris-border);
+}
+
+.tt-field__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--aeris-accent);
+  border: 2px solid var(--aeris-bg);
+  box-shadow: 0 0 0 1px var(--aeris-accent);
+}
+
+.tt-field__slider::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--aeris-border);
+}
+
+.tt-field__slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--aeris-accent);
+  border: 2px solid var(--aeris-bg);
+}
+
+.tt-field__slider:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.tt-field__range {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--aeris-text-faint);
+  margin-top: -4px;
+}
+
+.tt-field__desc {
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--aeris-text-dim);
+}
+
+.tt__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tt__primary,
+.tt__secondary {
+  min-height: 40px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.tt__primary {
+  color: #0b0b0b;
+  background: var(--aeris-accent);
+  border: 1px solid var(--aeris-accent);
+}
+
+.tt__primary:hover:not(:disabled) {
+  background: #ff8c3a;
+  border-color: #ff8c3a;
+}
+
+.tt__secondary {
+  color: var(--aeris-text);
+  background: var(--aeris-surface-2);
+  border: 1px solid var(--aeris-border);
+}
+
+.tt__secondary:hover:not(:disabled) {
+  border-color: var(--aeris-accent);
+}
+
+.tt__primary:disabled,
+.tt__secondary:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.tt__saved {
+  font-size: 12px;
+  color: var(--aeris-ok);
+}
+
+.tt__error {
+  padding: 10px 12px;
+  color: var(--aeris-err);
+  background: rgba(255, 77, 77, 0.08);
+  border: 1px solid rgba(255, 77, 77, 0.28);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .tt__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tt__primary,
+  .tt__secondary {
+    width: 100%;
+  }
+}

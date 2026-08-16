@@ -1,0 +1,82 @@
+/* Modal dialog — dimmed, blurred backdrop with a solid panel on top. */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200; /* above the sidebar overlay (100) */
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: modal-fade 140ms ease;
+}
+
+.modal__panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  overflow: hidden;
+  outline: none;
+  /* solid so nested content stays readable over the blurred backdrop */
+  background: var(--aeris-surface);
+  border: 1px solid var(--aeris-glass-border);
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  animation: modal-rise 160ms ease;
+}
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--aeris-border);
+}
+
+.modal__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.modal__close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--aeris-text-dim);
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.modal__close:hover {
+  color: var(--aeris-text);
+  background: var(--aeris-surface-2);
+}
+
+.modal__body {
+  padding: 18px;
+  overflow-y: auto;
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+}

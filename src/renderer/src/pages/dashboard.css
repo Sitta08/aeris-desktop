@@ -1,0 +1,253 @@
+/* Dashboard — glass cards over the shell's ambient background.
+ * Reuses the global theme tokens (--aeris-*) defined in theme.css. */
+
+.dash {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.dash__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dash__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.dash__range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--aeris-text-dim);
+}
+
+.dash__range select {
+  background: var(--aeris-surface-2);
+  color: var(--aeris-text);
+  border: 1px solid var(--aeris-border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dash__range select:focus-visible {
+  outline: 2px solid var(--aeris-accent);
+  outline-offset: 1px;
+}
+
+/* ── sections ── */
+.dash__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dash__section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dash__section-head h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.dash__hint {
+  font-size: 12px;
+  color: var(--aeris-text-faint);
+  font-family: ui-monospace, monospace;
+}
+
+.dash__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.dash__grid--wide {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* ── glass tile ── */
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 96px;
+  padding: 16px;
+  background: var(--aeris-glass-bg);
+  border: 1px solid var(--aeris-glass-border);
+  border-radius: var(--aeris-radius);
+  backdrop-filter: blur(var(--aeris-glass-blur));
+  -webkit-backdrop-filter: blur(var(--aeris-glass-blur));
+}
+
+.tile__label {
+  font-size: 12px;
+  color: var(--aeris-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.tile__value {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tile--big .tile__value {
+  font-size: 34px;
+}
+
+.tile__foot {
+  margin-top: auto;
+  font-size: 11px;
+  color: var(--aeris-text-faint);
+  line-height: 1.5;
+}
+
+.tile--error {
+  border-color: rgba(255, 77, 77, 0.4);
+}
+
+.accent {
+  color: var(--aeris-accent);
+}
+
+/* ── today tally ── */
+.tally {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.tally__col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tally__num {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tally__cap {
+  font-size: 12px;
+  color: var(--aeris-text-dim);
+}
+
+.tally__sep {
+  align-self: stretch;
+  width: 1px;
+  background: var(--aeris-border);
+}
+
+/* ── pm2.5 ── */
+.pm {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pm__num {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pm__unit {
+  font-size: 13px;
+  color: var(--aeris-text-dim);
+}
+
+.pm__badge {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.pm__badge--good {
+  background: rgba(63, 191, 106, 0.15);
+  color: var(--aeris-ok);
+}
+.pm__badge--moderate {
+  background: rgba(255, 176, 32, 0.15);
+  color: var(--aeris-warn);
+}
+.pm__badge--unhealthy {
+  background: rgba(255, 122, 26, 0.16);
+  color: var(--aeris-accent);
+}
+.pm__badge--hazardous {
+  background: rgba(255, 77, 77, 0.16);
+  color: var(--aeris-err);
+}
+
+/* ── node status strip ── */
+.nodes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--aeris-glass-bg);
+  border: 1px solid var(--aeris-glass-border);
+  border-radius: 10px;
+  backdrop-filter: blur(var(--aeris-glass-blur));
+  -webkit-backdrop-filter: blur(var(--aeris-glass-blur));
+}
+
+.node__dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.node.is-up .node__dot {
+  background: var(--aeris-ok);
+  box-shadow: 0 0 8px var(--aeris-ok);
+}
+
+.node.is-down .node__dot {
+  background: var(--aeris-err);
+}
+
+.node__name {
+  flex: 1;
+  font-size: 13px;
+}
+
+.node__state {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--aeris-text-dim);
+}
+
+.node.is-down .node__state {
+  color: var(--aeris-err);
+}

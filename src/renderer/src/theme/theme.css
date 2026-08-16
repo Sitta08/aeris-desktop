@@ -1,0 +1,112 @@
+/* AERIS theme — black / orange / white
+ * Accent #FF7A1A on near-black #0b0b0b. */
+:root {
+  --aeris-bg: #0b0b0b;
+  --aeris-surface: #141414;
+  --aeris-surface-2: #1c1c1c;
+  --aeris-border: #2a2a2a;
+
+  --aeris-accent: #ff7a1a;
+  --aeris-accent-dim: #cc6115;
+  --aeris-accent-soft: rgba(255, 122, 26, 0.14);
+
+  --aeris-text: #f5f5f5;
+  --aeris-text-dim: #9a9a9a;
+  --aeris-text-faint: #6a6a6a;
+
+  --aeris-ok: #3fbf6a;
+  --aeris-warn: #ffb020;
+  --aeris-err: #ff4d4d;
+
+  /* Glassmorphism (frosted panels over the ambient content background) */
+  --aeris-glass-bg: rgba(255, 255, 255, 0.06);
+  --aeris-glass-border: rgba(255, 255, 255, 0.12);
+  --aeris-glass-blur: 22px;
+
+  /* wide enough for icon + label, without eating the content area */
+  --aeris-sidebar-w: 180px;
+
+  /* Shared sidebar metrics. The panel and the thin rail both size themselves
+     from these, so the active marker stays aligned without magic numbers. */
+  --aeris-sb-pad: 10px;
+  --aeris-sb-item-h: 38px;
+  --aeris-sb-head-h: 26px;
+  --aeris-sb-row-gap: 2px;
+  --aeris-sb-group-gap: 18px;
+  /* fits the two-line brand block in the top bar; the sidebar's top offset
+     is derived from this, so changing it keeps everything aligned */
+  --aeris-topbar-h: 52px;
+  --aeris-radius: 12px;
+
+  --aeris-font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--aeris-bg);
+  color: var(--aeris-text);
+  font-family: var(--aeris-font);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden; /* the content area scrolls, never the shell */
+}
+
+/* ── Themed scrollbars ──
+ * Slim, translucent, camouflaged against the dark surface — only turns orange
+ * while you're actually dragging it. Applies wherever something scrolls. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.11);
+  /* transparent border + padding-box clip insets the thumb to ~4px */
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 122, 26, 0.55);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--aeris-accent);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox fallback (harmless in Chromium/Electron) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+/* Number inputs: hide the native up/down spinners — they can't be themed and
+ * clash with the dark UI. Values are typed or selected + arrow-keyed instead.
+ * Applies app-wide (Stepper, Terminal, anywhere with type="number"). */
+input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

@@ -1,0 +1,225 @@
+/* Full-screen auth flow — glassmorphism over the AERIS ambient background.
+ * Rendered before the shell, so it recreates the ambient glow itself. */
+.auth {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background-color: var(--aeris-bg);
+  background-image:
+    radial-gradient(
+      680px 560px at 12% -6%,
+      rgba(255, 122, 26, 0.18),
+      rgba(255, 122, 26, 0.04) 34%,
+      transparent 62%
+    ),
+    radial-gradient(
+      620px 520px at 108% 112%,
+      rgba(255, 122, 26, 0.14),
+      rgba(255, 122, 26, 0.03) 38%,
+      transparent 66%
+    );
+  background-repeat: no-repeat;
+}
+
+.auth__card {
+  width: 100%;
+  max-width: 380px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--aeris-glass-border);
+  border-radius: 16px;
+  backdrop-filter: blur(var(--aeris-glass-blur));
+  -webkit-backdrop-filter: blur(var(--aeris-glass-blur));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.auth__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.auth__brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--aeris-accent);
+  color: #0b0b0b;
+  font-weight: 800;
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+}
+
+.auth__brand-name {
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--aeris-accent);
+}
+
+.auth__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.auth__sub {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--aeris-text-dim);
+  line-height: 1.6;
+}
+
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.auth__row {
+  display: flex;
+  gap: 10px;
+}
+.auth__row .auth__field {
+  flex: 1;
+  min-width: 0;
+}
+
+.auth__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--aeris-text-dim);
+}
+
+.auth__field input {
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--aeris-text);
+  background: var(--aeris-surface-2);
+  border: 1px solid var(--aeris-border);
+  border-radius: 9px;
+  outline: none;
+}
+
+.auth__field input:focus {
+  border-color: var(--aeris-accent);
+  box-shadow: 0 0 0 3px var(--aeris-accent-soft);
+}
+
+/* password field with a show/hide eye toggle */
+.auth__password {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.auth__password input {
+  flex: 1;
+  min-width: 0; /* let the input shrink to the card, not its intrinsic size */
+  padding-right: 42px; /* room for the eye button */
+}
+
+.auth__eye {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--aeris-text-dim);
+  background: none;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.auth__eye:hover {
+  color: var(--aeris-text);
+  background: var(--aeris-surface);
+}
+
+.auth__eye[aria-pressed='true'] {
+  color: var(--aeris-accent);
+}
+
+.auth__submit {
+  margin-top: 4px;
+  padding: 12px;
+  font: inherit;
+  font-weight: 700;
+  color: #0b0b0b;
+  background: var(--aeris-accent);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.auth__submit:hover:not(:disabled) {
+  background: #ff8c3a;
+}
+
+.auth__submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.auth__msg {
+  padding: 9px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--aeris-accent);
+  background: var(--aeris-accent-soft);
+  border: 1px solid rgba(255, 122, 26, 0.3);
+  border-radius: 8px;
+}
+
+.auth__switch {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--aeris-text-dim);
+  text-align: center;
+}
+
+.auth__switch button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--aeris-accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* pending view */
+.auth__pending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.auth__pending-icon {
+  font-size: 44px;
+}
+
+.auth__pending .auth__submit {
+  margin-top: 14px;
+  align-self: stretch;
+}
